@@ -1,0 +1,234 @@
+SQL> CREATE TABLE DEPARTMENTS
+  2  (department_id number(2) primary key,
+  3  department_name varchar(25) not null,
+  4  hod_name varchar(25) not null,
+  5  department_email varchar(30) unique not null,
+  6  created_date date not null);
+
+Table created.
+
+SQL> select * from tab;
+
+TNAME                          TABTYPE  CLUSTERID
+------------------------------ ------- ----------
+BONUS                                    TABLE
+DEPARTMENTS                    TABLE
+DEPT                           		 TABLE
+EMP                           		 TABLE
+SALGRADE                     	  TABLE
+
+SQL> desc departments
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ DEPARTMENT_ID                                               NOT NULL NUMBER(2)
+ DEPARTMENT_NAME                                        NOT NULL VARCHAR2(25)
+ HOD_NAME                                                           NOT NULL VARCHAR2(25)
+ DEPARTMENT_EMAIL                                       NOT NULL VARCHAR2(30)
+ CREATED_DATE                                                  NOT NULL DATE
+
+ CREATE TABLE STUDENTS(
+    student_id                 number(4)         primary key,
+    student_name           varchar(25)        not null,
+    gender                         char(1)               check(gender in('M','F')) not null,
+    date_of_birth            date                     not null,
+    email                           varchar(30)        unique not null,
+    phone_number          number(10)       check(length (phone_number) = 10) not null   unique ,
+    department_id           number(2) 		not null,
+    admission_date 	date  			not null,
+   foreign key(department_id) references departments (department_id));
+
+SQL> select * from tab;
+
+TNAME                          TABTYPE  CLUSTERID
+------------------------------ ------- ----------
+BONUS                          TABLE
+DEPARTMENTS                    TABLE
+DEPT                           TABLE
+EMP                            TABLE
+SALGRADE                       TABLE
+STUDENTS                       TABLE
+
+6 rows selected.
+
+SQL> desc students
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ STUDENT_ID                                           	     NOT NULL NUMBER(4)
+ STUDENT_NAME                                          NOT NULL VARCHAR2(25)
+ GENDER                                               	    NOT NULL CHAR(1)
+ DATE_OF_BIRTH                                         NOT NULL DATE
+ EMAIL                                                		     NOT NULL VARCHAR2(30)
+ PHONE_NUMBER                                          NOT NULL NUMBER(10)
+ DEPARTMENT_ID                                         NOT NULL NUMBER(2)
+ ADMISSION_DATE                                        NOT NULL DATE
+
+
+CREATE TABLE FACULTY(
+faculty_id             number(3)          primary key,
+faculty_name       varchar(25)        not null,
+email			varchar(30)	     not null unique,
+phone_number	number(10)	      check(length (phone_number) = 10) not null unique ,
+ department_id     number(2) 		not null,
+joining_date  	date                       not null,
+salary			number(5) ,
+foreign key(department_id) references departments (department_id));
+   	
+SQL> select * from tab;
+
+TNAME                          TABTYPE  CLUSTERID
+------------------------------ ------- ----------
+BONUS                          	  TABLE
+DEPARTMENTS                    TABLE
+DEPT                           		  TABLE
+EMP                          		  TABLE
+FACULTY                    	          TABLE
+SALGRADE                    	  TABLE
+STUDENTS                      	  TABLE
+
+7 rows selected.
+
+SQL> desc faculty
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ FACULTY_ID                                            NOT NULL NUMBER(3)
+ FACULTY_NAME                                      NOT NULL VARCHAR2(25)
+ EMAIL                                                 	       NOT NULL VARCHAR2(30)
+ PHONE_NUMBER                                     NOT NULL NUMBER(10)
+ DEPARTMENT_ID                                     NOT NULL NUMBER(2)
+ JOINING_DATE                                          NOT NULL DATE
+ SALARY                                                         NUMBER(5)
+
+CREATE TABLE COURSES(
+course_id                    number(3)             primary key,
+course_name     	      varchar(30)           not null unique,
+department_id     		number(2) 		not null,
+duration_months         number(2)		not null,
+course_fee			number(5),
+foreign key(department_id) references departments (department_id));
+
+SQL> select * from tab;
+
+TNAME                          TABTYPE  CLUSTERID
+------------------------------ ------- ----------
+BONUS                          TABLE
+COURSES                      TABLE
+DEPARTMENTS           TABLE
+DEPT                               TABLE
+EMP                                 TABLE
+FACULTY                        TABLE
+SALGRADE                    TABLE
+STUDENTS                    TABLE
+
+8 rows selected.
+
+SQL> desc courses
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ COURSE_ID                                             NOT NULL NUMBER(3)
+ COURSE_NAME                                       NOT NULL VARCHAR2(30)
+ DEPARTMENT_ID                                    NOT NULL NUMBER(2)
+ DURATION_MONTHS                             NOT NULL NUMBER(2)
+ COURSE_FEE                                             NUMBER(5)
+
+CREATE TABLE ENROLLMENTS (
+enrollment_id			number(3)		primary key,
+ student_id                            number(4),
+course_id                    		number(3),
+enrollment_date			date				not null,
+status					varchar(20)		not null,
+foreign key(student_id)  references students (student_id),
+foreign key(course_id)  references courses (course_id));
+		
+SQL> select * from tab;
+
+TNAME                          TABTYPE  CLUSTERID
+------------------------------ ------- ----------
+BONUS                             TABLE
+COURSES                        TABLE
+DEPARTMENTS             TABLE
+DEPT                                 TABLE
+EMP                                   TABLE
+ENROLLMENTS              TABLE
+FACULTY                           TABLE
+SALGRADE                       TABLE
+STUDENTS                       TABLE
+
+9 rows selected.
+
+SQL> desc enrollments
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ ENROLLMENT_ID                                            NOT NULL NUMBER(3)
+ STUDENT_ID                                                     NUMBER(4)
+ COURSE_ID                                                         NUMBER(3)
+ ENROLLMENT_DATE                                       NOT NULL DATE
+ STATUS                                                  		 NOT NULL VARCHAR2(20)
+
+CREATE TABLE EXAMS(
+exam_id				number(4)			primary key,
+course_id                    	number(3)			not null ,
+exam_date			date					not null,
+total_marks			number(3)			not null,
+foreign key(course_id)  references courses (course_id));
+
+SQL> select * from tab;
+
+TNAME                          TABTYPE  CLUSTERID
+------------------------------ ------- ----------
+BONUS                             TABLE
+COURSES                         TABLE
+DEPARTMENTS             TABLE
+DEPT                                 TABLE
+EMP                                   TABLE
+ENROLLMENTS             TABLE
+EXAMS                             TABLE
+FACULTY                          TABLE
+SALGRADE                      TABLE
+STUDENTS                      TABLE
+
+10 rows selected.
+
+SQL> desc exams
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ EXAM_ID                                               NOT NULL NUMBER(4)
+ COURSE_ID                                           NOT NULL NUMBER(3)
+ EXAM_DATE                                          NOT NULL DATE
+ TOTAL_MARKS                                      NOT NULL NUMBER(3)
+
+CREATE TABLE RESULTS(
+result_id			number(4)			primary key,
+student_id                    number(4)         		not null,
+exam_id				number(4)			not null,
+marks_obtained		number(2)			not null check(marks_obtained>0),
+grade				varchar(2)			not null ,
+foreign key(student_id)  references students (student_id),
+foreign key(exam_id)  references exams (exam_id));
+
+SQL> select * from tab;
+
+TNAME                          TABTYPE  CLUSTERID
+------------------------------ ------- ----------
+BONUS                            TABLE
+COURSES                        TABLE
+DEPARTMENTS             TABLE
+DEPT                                 TABLE
+EMP                                   TABLE
+ENROLLMENTS              TABLE
+EXAMS                              TABLE
+FACULTY                          TABLE
+RESULTS                         TABLE
+SALGRADE                      TABLE
+STUDENTS                      TABLE
+
+11 rows selected.
+
+SQL> desc results
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ RESULT_ID                                               NOT NULL NUMBER(4)
+ STUDENT_ID                                            NOT NULL NUMBER(4)
+ EXAM_ID                                                   NOT NULL NUMBER(4)
+ MARKS_OBTAINED                                NOT NULL NUMBER(2)
+ GRADE                                                        NOT NULL VARCHAR2(2)
+

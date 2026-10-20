@@ -1,0 +1,16 @@
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Java compiled files
+bin/
+target/
+*.class
+
+# Generated project data
+dfs-data/
+
+# OS files
+.DS_Store
+Thumbs.db
